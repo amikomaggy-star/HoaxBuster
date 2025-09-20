@@ -1,18 +1,773 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>HoaxBuster</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HoaxBuster - AI Fact Checker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, hsl(240 15% 98%), hsl(215 20% 96%));
+        }
+        
+        .gradient-hero {
+            background: linear-gradient(135deg, hsl(215 85% 50%), hsl(215 75% 55%));
+        }
+        
+        .gradient-card {
+            background: linear-gradient(135deg, hsl(0 0% 100%), hsl(215 15% 98%));
+        }
+        
+        .shadow-professional {
+            box-shadow: 0 4px 20px hsl(215 25% 15% / 0.08);
+        }
+        
+        .shadow-elevated {
+            box-shadow: 0 8px 30px hsl(215 25% 15% / 0.12);
+        }
+        
+        .animate-fade-in {
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        .animate-fade-up {
+            animation: fadeUp 0.8s ease-out;
+        }
+        
+        .animate-float-3d {
+            animation: float3d 6s ease-in-out infinite;
+        }
+        
+        .animate-ping-slow {
+            animation: pingSlow 3s cubic-bezier(0, 0, 0.2, 1) infinite;
+        }
+        
+        .animate-gradient-x {
+            animation: gradientX 15s ease infinite;
+            background-size: 400% 400%;
+        }
+        
+        .animate-gradient-x-reverse {
+            animation: gradientXReverse 15s ease infinite;
+            background-size: 400% 400%;
+        }
+        
+        .animate-bounce-in {
+            animation: bounceIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .animate-confetti {
+            animation: confettiFall 3s ease-out forwards;
+        }
+        
+        .animate-shake {
+            animation: shake 0.5s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes float3d {
+            0%, 100% { transform: translate3d(0, 0, 0) rotate3d(1, 1, 1, 0deg); }
+            33% { transform: translate3d(30px, -30px, 0) rotate3d(1, 0, 0, 10deg); }
+            66% { transform: translate3d(-30px, 30px, 0) rotate3d(0, 1, 0, 10deg); }
+        }
+        
+        @keyframes pingSlow {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+        
+        @keyframes gradientX {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        @keyframes gradientXReverse {
+            0% { background-position: 100% 50%; }
+            50% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+        
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        @keyframes confettiFall {
+            0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+        
+        .truth-verified {
+            color: hsl(140 75% 45%);
+        }
+        
+        .truth-verified-bg {
+            background-color: hsl(140 75% 95%);
+            border-color: hsl(140 75% 80%);
+        }
+        
+        .misleading-warning {
+            color: hsl(35 85% 55%);
+        }
+        
+        .misleading-warning-bg {
+            background-color: hsl(35 85% 95%);
+            border-color: hsl(35 85% 75%);
+        }
+        
+        .fake-danger {
+            color: hsl(355 85% 55%);
+        }
+        
+        .fake-danger-bg {
+            background-color: hsl(355 85% 95%);
+            border-color: hsl(355 85% 80%);
+        }
+        
+        .unknown-neutral {
+            color: hsl(215 15% 55%);
+        }
+        
+        .unknown-neutral-bg {
+            background-color: hsl(215 15% 95%);
+            border-color: hsl(215 15% 80%);
+        }
+        
+        .credibility-high {
+            color: hsl(140 75% 45%);
+        }
+        
+        .credibility-medium {
+            color: hsl(35 85% 55%);
+        }
+        
+        .credibility-low {
+            color: hsl(355 85% 55%);
+        }
+    </style>
 </head>
-<body>
-  <div class="container">
-    <h1>HoaxBuster 🕵️‍♂️</h1>
-    <p>Paste a news link or text below to analyze its credibility:</p>
-    <textarea id="newsInput" placeholder="Enter short text or URL..."></textarea>
-    <button id="submitBtn">Analyze</button>
-    <div id="result"></div>
-  </div>
-  <script src="script.js"></script>
+<body class="min-h-screen">
+    <!-- Navigation Menu Bar -->
+    <nav class="fixed top-0 w-full bg-white/95 backdrop-blur-xl z-50 border-b border-gray-200/30 shadow-professional">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 gradient-hero rounded-xl flex items-center justify-center shadow-professional">
+                        <i data-feather="shield" class="text-white w-6 h-6"></i>
+                    </div>
+                    <span class="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                        HoaxBuster
+                    </span>
+                </div>
+
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#" class="text-gray-700 hover:text-blue-600 font-medium transition-colors">Home</a>
+                    <a href="#fact-checker-section" class="text-gray-700 hover:text-blue-600 font-medium transition-colors">Fact Checker</a>
+                    <a href="#features-section" class="text-gray-700 hover:text-blue-600 font-medium transition-colors">Features</a>
+                    <a href="#" class="text-gray-700 hover:text-blue-600 font-medium transition-colors">Educational Mode</a>
+                    <a href="#" class="text-gray-700 hover:text-blue-600 font-medium transition-colors">About</a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button class="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors" onclick="toggleMobileMenu()">
+                    <i data-feather="menu" class="w-6 h-6 text-gray-700"></i>
+                </button>
+
+                <!-- Call to Action Button -->
+                <button onclick="document.querySelector('#fact-checker-section').scrollIntoView({ behavior: 'smooth' })" 
+                        class="hidden md:block gradient-hero hover:shadow-elevated hover:scale-105 transition-all duration-300 text-white px-6 py-2 rounded-xl font-semibold text-sm">
+                    Verify Now
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="md:hidden bg-white border-t border-gray-200/30 shadow-lg hidden">
+            <div class="container mx-auto px-4 py-4 space-y-4">
+                <a href="#" class="block text-gray-700 hover:text-blue-600 font-medium transition-colors py-2">Home</a>
+                <a href="#fact-checker-section" class="block text-gray-700 hover:text-blue-600 font-medium transition-colors py-2" onclick="toggleMobileMenu()">Fact Checker</a>
+                <a href="#features-section" class="block text-gray-700 hover:text-blue-600 font-medium transition-colors py-2" onclick="toggleMobileMenu()">Features</a>
+                <a href="#" class="block text-gray-700 hover:text-blue-600 font-medium transition-colors py-2">Educational Mode</a>
+                <a href="#" class="block text-gray-700 hover:text-blue-600 font-medium transition-colors py-2">About</a>
+                <button onclick="document.querySelector('#fact-checker-section').scrollIntoView({ behavior: 'smooth' }); toggleMobileMenu();" 
+                        class="w-full gradient-hero hover:shadow-elevated transition-all duration-300 text-white px-6 py-3 rounded-xl font-semibold text-sm mt-4">
+                    Verify Now
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Add padding to account for fixed navbar -->
+    <div class="pt-16"></div>
+
+    <!-- Hero Section - Enhanced with 3D effect, particle background and images -->
+    <section class="py-20 relative overflow-hidden min-h-screen flex items-center">
+        <!-- Particle background -->
+        <div class="absolute inset-0 z-0" id="particle-canvas"></div>
+        
+        <!-- Background images with transparency -->
+        <div class="absolute top-0 left-0 w-full h-full z-0 opacity-10">
+            <img src="http://static.photos/technology/1200x630/1" alt="AI Technology" class="w-full h-full object-cover">
+        </div>
+        
+        <!-- 3D floating elements with images -->
+        <div class="absolute top-20 left-10 w-48 h-48 z-10 hidden lg:block opacity-90 animate-float-3d" style="animation-delay: 0s;">
+            <img src="http://static.photos/blue/320x240/5" alt="Fact Check Icon" class="w-full h-full object-contain rounded-2xl shadow-elevated">
+        </div>
+        <div class="absolute bottom-20 right-10 w-40 h-40 z-10 hidden lg:block opacity-90 animate-float-3d" style="animation-delay: 2s;">
+            <img src="http://static.photos/education/320x240/8" alt="Education Icon" class="w-full h-full object-contain rounded-2xl shadow-elevated">
+        </div>
+        
+        <!-- Animated verification shield with image -->
+        <div class="absolute top-20 right-20 w-40 h-40 z-10 hidden lg:block">
+            <div class="w-full h-full bg-gradient-hero rounded-2xl flex items-center justify-center shadow-elevated animate-ping-slow p-2">
+                <img src="http://static.photos/shield/320x240/3" alt="Verification Shield" class="w-full h-full object-contain rounded-xl">
+            </div>
+        </div>
+        
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="text-center space-y-8 mb-16" data-aos="fade-up" data-aos-duration="1500">
+                <div class="inline-flex items-center space-x-3 gradient-hero px-8 py-4 rounded-full text-white font-semibold shadow-elevated hover:scale-105 transition-transform duration-300 transform-gpu backdrop-blur-sm border border-white/20">
+                    <img src="http://static.photos/ai/200x200/2" alt="AI Icon" class="w-8 h-8 rounded-full object-cover animate-pulse">
+                    <span>AI-Powered Truth Verification</span>
+                </div>
+                
+                <div class="flex flex-col lg:flex-row items-center justify-center gap-8 mb-12">
+                    <div class="lg:w-1/3">
+                        <img src="http://static.photos/truth/640x360/4" alt="Truth Detection" class="w-full h-auto rounded-3xl shadow-elevated animate-fade-in">
+                    </div>
+                    
+                    <div class="lg:w-2/3">
+                        <h1 class="text-6xl md:text-8xl font-bold text-gray-900 leading-tight tracking-tight">
+                            <span class="bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent animate-gradient-x">
+                                Truth
+                            </span>
+                            <br />
+                            <span class="text-5xl md:text-7xl opacity-90">in a World of</span>
+                            <br />
+                            <span class="bg-gradient-to-r from-red-600 via-orange-600 to-yellow-600 bg-clip-text text-transparent animate-gradient-x-reverse">
+                                Misinformation
+                            </span>
+                        </h1>
+                    </div>
+                </div>
+                
+                <p class="text-2xl text-gray-700 max-w-4xl mx-auto leading-relaxed font-light">
+                    Instantly verify claims, detect fake news, and access credible sources with our 
+                    <span class="font-semibold text-blue-600">cutting-edge AI verification system</span>
+                </p>
+                
+                <div class="pt-12 flex flex-col sm:flex-row gap-6 justify-center items-center">
+                    <button onclick="document.querySelector('#fact-checker-section').scrollIntoView({ behavior: 'smooth' })" 
+                            class="gradient-hero hover:shadow-elevated hover:scale-110 transition-all duration-300 text-white text-xl px-12 py-6 rounded-2xl font-bold shadow-professional transform-gpu backdrop-blur-sm border-2 border-white/30 group relative overflow-hidden">
+                        <div class="absolute inset-0 bg-white/10 group-hover:bg-white/20 transition-all duration-500"></div>
+                        <div class="flex items-center relative z-10">
+                            <img src="http://static.photos/search/200x200/7" alt="Search Icon" class="w-6 h-6 mr-4 group-hover:scale-125 transition-transform">
+                            Verify Now
+                        </div>
+                    </button>
+                    
+                    <button onclick="document.querySelector('#features-section').scrollIntoView({ behavior: 'smooth' })" 
+                            class="bg-white/10 hover:bg-white/20 backdrop-blur-sm border-2 border-blue-500/30 text-blue-600 text-xl px-12 py-6 rounded-2xl font-bold shadow-professional hover:scale-110 transition-all duration-300 transform-gpu group">
+                        <div class="flex items-center">
+                            <img src="http://static.photos/play/200x200/6" alt="Play Icon" class="w-6 h-6 mr-4 group-hover:scale-125 transition-transform">
+                            See How It Works
+                        </div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Features Grid - Enhanced with 3D hover effects -->
+            <div id="features-section" class="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-20">
+                <div class="p-8 text-center gradient-card rounded-2xl hover:shadow-elevated transition-all duration-500 hover:-translate-y-3 animate-fade-in border border-gray-200/20 transform-gpu group" 
+                     data-aos="fade-up" data-aos-delay="100" style="transform-style: preserve-3d;">
+                    <div class="w-20 h-20 gradient-hero rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-professional group-hover:scale-110 transition-transform duration-500">
+                        <i data-feather="shield" class="text-white w-10 h-10"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-4 group-hover:text-blue-600 transition-colors">AI-Powered Detection</h3>
+                    <p class="text-gray-600 leading-relaxed">Advanced neural networks analyze and verify information with 99.7% accuracy</p>
+                </div>
+                
+                <div class="p-8 text-center gradient-card rounded-2xl hover:shadow-elevated transition-all duration-500 hover:-translate-y-3 animate-fade-in border border-gray-200/20 transform-gpu group" 
+                     data-aos="fade-up" data-aos-delay="200" style="transform-style: preserve-3d;">
+                    <div class="w-20 h-20 gradient-hero rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-professional group-hover:scale-110 transition-transform duration-500">
+                        <i data-feather="zap" class="text-white w-10 h-10"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-4 group-hover:text-blue-600 transition-colors">Instant Results</h3>
+                    <p class="text-gray-600 leading-relaxed">Real-time analysis with detailed credibility scores and source verification</p>
+                </div>
+                
+                <div class="p-8 text-center gradient-card rounded-2xl hover:shadow-elevated transition-all duration-500 hover:-translate-y-3 animate-fade-in border border-gray-200/20 transform-gpu group" 
+                     data-aos="fade-up" data-aos-delay="300" style="transform-style: preserve-3d;">
+                    <div class="w-20 h-20 gradient-hero rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-professional group-hover:scale-110 transition-transform duration-500">
+                        <i data-feather="globe" class="text-white w-10 h-10"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-4 group-hover:text-blue-600 transition-colors">Global Sources</h3>
+                    <p class="text-gray-600 leading-relaxed">Connected to 50+ trusted international fact-checking databases worldwide</p>
+                </div>
+                
+                <div class="p-8 text-center gradient-card rounded-2xl hover:shadow-elevated transition-all duration-500 hover:-translate-y-3 animate-fade-in border border-gray-200/20 transform-gpu group" 
+                     data-aos="fade-up" data-aos-delay="400" style="transform-style: preserve-3d;">
+                    <div class="w-20 h-20 gradient-hero rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-professional group-hover:scale-110 transition-transform duration-500">
+                        <i data-feather="award" class="text-white w-10 h-10"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-4 group-hover:text-blue-600 transition-colors">Educational Mode</h3>
+                    <p class="text-gray-600 leading-relaxed">Interactive training modules to master misinformation detection skills</p>
+                </div>
+            </div>
+
+            <!-- Trust Indicators - Enhanced with logos and animations -->
+            <div class="mt-32 text-center" data-aos="fade-up" data-aos-duration="1200">
+                <p class="text-xl text-gray-700 mb-16 font-light">Trusted by leading fact-checking organizations worldwide</p>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
+                    <div class="bg-white/80 backdrop-blur-sm rounded-2xl p-8 border border-gray-200/30 hover:shadow-elevated transition-all duration-500 hover:-translate-y-2 animate-fade-in transform-gpu" 
+                         data-aos="fade-up" data-aos-delay="500">
+                        <div class="w-24 h-24 mx-auto mb-4 bg-gradient-to-r from-red-600 to-orange-600 rounded-xl flex items-center justify-center shadow-professional">
+                            <span class="text-white font-bold text-lg">Reuters</span>
+                        </div>
+                    </div>
+                    <div class="bg-white/80 backdrop-blur-sm rounded-2xl p-8 border border-gray-200/30 hover:shadow-elevated transition-all duration-500 hover:-translate-y-2 animate-fade-in transform-gpu" 
+                         data-aos="fade-up" data-aos-delay="600">
+                        <div class="w-24 h-24 mx-auto mb-4 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl flex items-center justify-center shadow-professional">
+                            <span class="text-white font-bold text-lg">BBC</span>
+                        </div>
+                    </div>
+                    <div class="bg-white/80 backdrop-blur-sm rounded-2xl p-8 border border-gray-200/30 hover:shadow-elevated transition-all duration-500 hover:-translate-y-2 animate-fade-in transform-gpu" 
+                         data-aos="fade-up" data-aos-delay="700">
+                        <div class="w-24 h-24 mx-auto mb-4 bg-gradient-to-r from-green-600 to-teal-600 rounded-xl flex items-center justify-center shadow-professional">
+                            <span class="text-white font-bold text-lg">AP News</span>
+                        </div>
+                    </div>
+                    <div class="bg-white/80 backdrop-blur-sm rounded-2xl p-8 border border-gray-200/30 hover:shadow-elevated transition-all duration-500 hover:-translate-y-2 animate-fade-in transform-gpu" 
+                         data-aos="fade-up" data-aos-delay="800">
+                        <div class="w-24 h-24 mx-auto mb-4 bg-gradient-to-r from-indigo-600 to-pink-600 rounded-xl flex items-center justify-center shadow-professional">
+                            <span class="text-white font-bold text-lg">Snopes</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Fact Checker Section - Enhanced with modern design -->
+    <section id="fact-checker-section" class="py-32 bg-gradient-to-b from-white to-gray-50 relative overflow-hidden">
+        <!-- Background pattern -->
+        <div class="absolute inset-0 opacity-5">
+            <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiMwMDAiIGZpbGwtb3BhY2l0eT0iMC4xIj48cGF0aCBkPSJNMzYgMzRjMC0yLjIgMS44LTQgNC00czQgMS44IDQgNC0xLjggNC00IDQtNC0xLjgtNC00eiIvPjwvZz48L2c+PC9zdmc+')]"></div>
+        </div>
+        
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="max-w-5xl mx-auto">
+                <!-- Input Section - Enhanced with floating design -->
+                <div class="p-12 gradient-card rounded-3xl shadow-elevated border border-gray-200/20 mb-12 transform-gpu backdrop-blur-sm" 
+                     data-aos="fade-up" data-aos-duration="1200" style="transform-style: preserve-3d;">
+                    <div class="space-y-8">
+                        <div class="text-center space-y-6">
+                            <h2 class="text-4xl font-bold text-gray-900 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                                Verify Any Claim Instantly
+                            </h2>
+                            <p class="text-xl text-gray-700 font-light">
+                                Paste text, links, or social media content for immediate AI analysis
+                            </p>
+                        </div>
+                        
+                        <div class="space-y-8">
+                            <div class="relative">
+                                <textarea
+                                    placeholder="Enter your statement, news link, or social media post here (max 250 words)..."
+                                    class="w-full min-h-48 p-6 rounded-2xl border-2 border-gray-200/50 focus:border-blue-500/50 focus:shadow-professional transition-all duration-500 text-xl resize-none bg-white/50 backdrop-blur-sm"
+                                    maxlength="250"
+                                    oninput="this.parentNode.querySelector('.char-count').textContent = this.value.length + '/250 characters'"
+                                ></textarea>
+                                <div class="absolute bottom-4 right-4">
+                                    <span class="char-count text-gray-500 font-medium text-sm bg-white/80 px-3 py-1 rounded-full">
+                                        0/250 characters
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+                                    <span class="text-gray-600 font-medium">Real-time AI Analysis Ready</span>
+                                </div>
+                                <button
+                                    class="gradient-hero hover:shadow-elevated hover:scale-110 transition-all duration-300 text-white text-xl px-10 py-4 rounded-2xl font-bold shadow-professional transform-gpu group relative overflow-hidden"
+                                >
+                                    <div class="absolute inset-0 bg-white/20 group-hover:bg-white/30 transition-all duration-500"></div>
+                                    <div class="flex items-center relative z-10">
+                                        <i data-feather="search" class="mr-4 w-6 h-6 group-hover:rotate-12 transition-transform"></i>
+                                        Analyze Now
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Results Section (Hidden by default) - Enhanced with animated reveal -->
+                <div class="p-12 gradient-card rounded-3xl shadow-elevated border border-gray-200/20 hidden transform transition-all duration-700 scale-95 opacity-0 transform-gpu" 
+                     id="results-section" data-aos="fade-up" style="transform-style: preserve-3d;">
+                    <div class="space-y-12">
+                        <!-- Status Badge - Enhanced with animation -->
+                        <div class="flex items-center justify-center">
+                            <div class="truth-verified-bg px-8 py-4 text-2xl font-bold border-4 border-green-300/50 shadow-professional transition-all duration-500 rounded-2xl flex items-center animate-bounce-in">
+                                <i data-feather="shield" class="truth-verified mr-4 w-8 h-8"></i>
+                                <span class="truth-verified">✅ Verified True</span>
+                                <div class="ml-4 w-3 h-3 bg-green-400 rounded-full animate-ping"></div>
+                            </div>
+                        </div>
+
+                        <!-- Main Result - Enhanced with better typography -->
+                        <div class="text-center space-y-6">
+                            <h3 class="text-3xl font-bold text-gray-900 bg-gradient-to-r from-green-600 to-teal-600 bg-clip-text text-transparent">
+                                Analysis Complete
+                            </h3>
+                            <p class="text-xl text-green-600 font-semibold">✅ Confirmed Accurate Information</p>
+                            <p class="text-xl text-gray-800 leading-relaxed font-light">
+                                Our advanced AI has thoroughly analyzed your statement and cross-referenced it with 
+                                <span class="font-semibold text-blue-600">12 verified sources</span> for maximum accuracy.
+                            </p>
+                        </div>
+
+                        <!-- Credibility Score - Enhanced with visual meter -->
+                        <div class="bg-white/80 backdrop-blur-sm rounded-2xl p-8 border border-gray-200/30 shadow-professional transform-gpu">
+                            <div class="flex items-center justify-between mb-6">
+                                <span class="text-xl font-bold text-gray-900">Source Credibility Rating</span>
+                                <div class="flex items-center space-x-4">
+                                    <div class="flex space-x-1">
+                                        <i data-feather="star" class="w-7 h-7 fill-yellow-400 text-yellow-400 animate-pulse" style="animation-delay: 0.1s"></i>
+                                        <i data-feather="star" class="w-7 h-7 fill-yellow-400 text-yellow-400 animate-pulse" style="animation-delay: 0.2s"></i>
+                                        <i data-feather="star" class="w-7 h-7 fill-yellow-400 text-yellow-400 animate-pulse" style="animation-delay: 0.3s"></i>
+                                        <i data-feather="star" class="w-7 h-7 fill-gray-300 text-gray-300"></i>
+                                        <i data-feather="star" class="w-7 h-7 fill-gray-300 text-gray-300"></i>
+                                    </div>
+                                    <span class="text-2xl font-bold text-gray-900">
+                                        84%
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-3">
+                                <div class="bg-gradient-to-r from-yellow-400 to-orange-400 h-3 rounded-full transition-all duration-1000" style="width: 84%"></div>
+                            </div>
+                        </div>
+
+                        <!-- Sources - Enhanced with better visual hierarchy -->
+                        <div class="space-y-6">
+                            <h4 class="text-2xl font-bold text-gray-900 flex items-center">
+                                <i data-feather="check-circle" class="text-green-500 mr-3 w-6 h-6"></i>
+                                Verified Sources & References
+                            </h4>
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between p-6 bg-white/80 backdrop-blur-sm rounded-2xl hover:shadow-elevated transition-all duration-500 cursor-pointer hover:-translate-y-2 border border-gray-200/20 group transform-gpu">
+                                    <div class="flex items-center space-x-4">
+                                        <div class="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl flex items-center justify-center shadow-professional">
+                                            <span class="text-white font-bold">BBC</span>
+                                        </div>
+                                        <span class="text-xl font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">BBC News Fact Check</span>
+                                    </div>
+                                    <i data-feather="external-link" class="text-blue-500 w-6 h-6 group-hover:scale-125 transition-transform"></i>
+                                </div>
+                                <div class="flex items-center justify-between p-6 bg-white/80 backdrop-blur-sm rounded-2xl hover:shadow-elevated transition-all duration-500 cursor-pointer hover:-translate-y-2 border border-gray-200/20 group transform-gpu">
+                                    <div class="flex items-center space-x-4">
+                                        <div class="w-12 h-12 bg-gradient-to-r from-red-500 to-orange-500 rounded-xl flex items-center justify-center shadow-professional">
+                                            <span class="text-white font-bold">RT</span>
+                                        </div>
+                                        <span class="text-xl font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">Reuters Fact Check</span>
+                                    </div>
+                                    <i data-feather="external-link" class="text-blue-500 w-6 h-6 group-hover:scale-125 transition-transform"></i>
+                                </div>
+                                <div class="flex items-center justify-between p-6 bg-white/80 backdrop-blur-sm rounded-2xl hover:shadow-elevated transition-all duration-500 cursor-pointer hover:-translate-y-2 border border-gray-200/20 group transform-gpu">
+                                    <div class="flex items-center space-x-4">
+                                        <div class="w-12 h-12 bg-gradient-to-r from-green-500 to-teal-500 rounded-xl flex items-center justify-center shadow-professional">
+                                            <span class="text-white font-bold">AP</span>
+                                        </div>
+                                        <span class="text-xl font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">Associated Press Verification</span>
+                                    </div>
+                                    <i data-feather="external-link" class="text-blue-500 w-6 h-6 group-hover:scale-125 transition-transform"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Call to Action - Enhanced with gradient border and image -->
+                        <div class="gradient-hero rounded-2xl p-8 text-center shadow-professional relative overflow-hidden group">
+                            <div class="absolute inset-0 bg-white/10 group-hover:bg-white/20 transition-all duration-500"></div>
+                            <img src="http://static.photos/learn/640x360/36" alt="Educational Background" class="absolute inset-0 w-full h-full object-cover opacity-20">
+                            <div class="relative z-10">
+                                <div class="flex justify-center mb-6">
+                                    <img src="http://static.photos/book/200x200/37" alt="Education Icon" class="w-16 h-16 rounded-2xl bg-white/20 p-2">
+                                </div>
+                                <p class="text-white font-bold text-2xl mb-6">
+                                    Master the Art of Truth Detection
+                                </p>
+                                <button class="border-2 border-white/50 bg-white/20 text-white hover:bg-white hover:text-blue-600 transition-all duration-300 px-8 py-4 rounded-2xl font-semibold text-lg group-hover:scale-105 transform-gpu">
+                                    <div class="flex items-center">
+                                        <img src="http://static.photos/start/200x200/38" alt="Start Icon" class="mr-3 w-6 h-6 group-hover:rotate-12 transition-transform">
+                                        Start Learning Now
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer - Enhanced with modern design -->
+    <footer class="bg-gradient-to-b from-gray-900 to-black text-white py-16 relative overflow-hidden">
+        <!-- Footer background elements -->
+        <div class="absolute inset-0 opacity-10">
+            <div class="absolute top-0 left-0 w-64 h-64 bg-blue-500 rounded-full blur-3xl"></div>
+            <div class="absolute bottom-0 right-0 w-64 h-64 bg-purple-500 rounded-full blur-3xl"></div>
+        </div>
+        
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="grid md:grid-cols-4 gap-12 mb-12">
+                <div>
+                    <h3 class="text-3xl font-bold mb-6 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">HoaxBuster</h3>
+                    <p class="text-gray-400 mb-6 leading-relaxed">Advanced AI-powered truth verification platform fighting misinformation worldwide</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center hover:bg-white/20 transition-all duration-300 hover:scale-110">
+                            <i data-feather="twitter" class="text-blue-400"></i>
+                        </a>
+                        <a href="#" class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center hover:bg-white/20 transition-all duration-300 hover:scale-110">
+                            <i data-feather="facebook" class="text-blue-400"></i>
+                        </a>
+                        <a href="#" class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center hover:bg-white/20 transition-all duration-300 hover:scale-110">
+                            <i data-feather="instagram" class="text-pink-400"></i>
+                        </a>
+                        <a href="#" class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center hover:bg-white/20 transition-all duration-300 hover:scale-110">
+                            <i data-feather="github" class="text-white"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-6 text-white">Product</h4>
+                    <ul class="space-y-4">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Fact Checker</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Educational Mode</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">API Access</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Browser Extension</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-6 text-white">Resources</h4>
+                    <ul class="space-y-4">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Blog</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Tutorials</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Case Studies</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Documentation</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-6 text-white">Company</h4>
+                    <ul class="space-y-4">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">About Us</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Careers</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Contact</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Partners</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-400 text-sm mb-4 md:mb-0">© 2024 HoaxBuster. All rights reserved. Fighting misinformation with AI.</p>
+                <div class="flex space-x-8">
+                    <a href="#" class="text-gray-400 hover:text-white text-sm transition-colors">Privacy Policy</a>
+                    <a href="#" class="text-gray-400 hover:text-white text-sm transition-colors">Terms of Service</a>
+                    <a href="#" class="text-gray-400 hover:text-white text-sm transition-colors">Contact Us</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        AOS.init({
+            duration: 1200,
+            once: true,
+            easing: 'ease-out-cubic'
+        });
+        feather.replace();
+        
+        // Mobile menu functionality
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const menu = document.getElementById('mobile-menu');
+            const menuButton = document.querySelector('[onclick="toggleMobileMenu()"]');
+            
+            if (!menu.contains(event.target) && !menuButton.contains(event.target) && !menu.classList.contains('hidden')) {
+                menu.classList.add('hidden');
+            }
+        });
+
+        // Enhanced fact checking simulation
+        document.querySelectorAll('button').forEach(button => {
+            if (button.textContent.includes('Analyze Now')) {
+                button.addEventListener('click', function() {
+                    const textarea = document.querySelector('textarea');
+                    const resultsSection = document.getElementById('results-section');
+                    
+                    if (textarea.value.trim() === '') {
+                        // Add shake animation for empty input
+                        textarea.classList.add('animate-shake');
+                        setTimeout(() => textarea.classList.remove('animate-shake'), 500);
+                        return;
+                    }
+                    
+                    // Show enhanced loading state
+                    const originalHTML = this.innerHTML;
+                    this.innerHTML = `
+                        <div class="flex items-center">
+                            <div class="animate-spin rounded-full h-6 w-6 border-3 border-white border-t-transparent mr-4"></div>
+                            <span class="text-lg">AI Analysis in Progress...</span>
+                        </div>
+                    `;
+                    this.disabled = true;
+                    
+                    // Add particle effect during loading
+                    const particles = document.createElement('div');
+                    particles.className = 'absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-2xl animate-pulse';
+                    this.appendChild(particles);
+                    
+                    // Simulate API call with enhanced effects
+                    setTimeout(() => {
+                        // Show results with enhanced animation
+                        resultsSection.classList.remove('hidden');
+                        setTimeout(() => {
+                            resultsSection.classList.add('scale-100', 'opacity-100');
+                            resultsSection.classList.remove('scale-95', 'opacity-0');
+                        }, 10);
+                        
+                        // Smooth scroll to results
+                        resultsSection.scrollIntoView({ 
+                            behavior: 'smooth', 
+                            block: 'start',
+                            inline: 'nearest'
+                        });
+                        
+                        // Add confetti effect on successful analysis
+                        setTimeout(() => {
+                            const confetti = document.createElement('div');
+                            confetti.className = 'fixed inset-0 z-50 pointer-events-none';
+                            confetti.innerHTML = `
+                                <div class="absolute top-0 left-1/2 w-2 h-2 bg-yellow-400 rounded-full animate-confetti" style="animation-delay: 0.1s"></div>
+                                <div class="absolute top-0 left-40% w-2 h-2 bg-green-400 rounded-full animate-confetti" style="animation-delay: 0.2s"></div>
+                                <div class="absolute top-0 left-60% w-2 h-2 bg-blue-400 rounded-full animate-confetti" style="animation-delay: 0.3s"></div>
+                            `;
+                            document.body.appendChild(confetti);
+                            setTimeout(() => confetti.remove(), 3000);
+                        }, 500);
+                        
+                        // Reset button
+                        this.innerHTML = originalHTML;
+                        this.disabled = false;
+                        feather.replace();
+                    }, 2500);
+                });
+            }
+        });
+        
+        // Enhanced animations for hero text
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add floating animation to trust badge
+            const trustBadge = document.querySelector('.bg-gradient-to-r');
+            setInterval(() => {
+                trustBadge.classList.toggle('translate-y-2');
+            }, 3000);
+            
+            // Initialize particle background
+            initParticles();
+        });
+        
+        // Particle background initialization
+        function initParticles() {
+            const canvas = document.createElement('canvas');
+            canvas.id = 'particle-canvas';
+            canvas.className = 'absolute inset-0 z-0';
+            document.querySelector('#particle-canvas').replaceWith(canvas);
+            
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            
+            const particles = [];
+            const particleCount = 100;
+            
+            for (let i = 0; i < particleCount; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    radius: Math.random() * 2 + 1,
+                    speed: Math.random() * 2 + 0.5,
+                    direction: Math.random() * 360,
+                    color: hsla(${Math.random() * 360}, 70%, 60%, ${Math.random() * 0.3})
+                });
+            }
+            
+            function animateParticles() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                particles.forEach(particle => {
+                    ctx.beginPath();
+                    ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = particle.color;
+                    ctx.fill();
+                    
+                    particle.x += Math.cos(particle.direction) * particle.speed;
+                    particle.y += Math.sin(particle.direction) * particle.speed;
+                    
+                    if (particle.x < 0 || particle.x > canvas.width || 
+                        particle.y < 0 || particle.y > canvas.height) {
+                        particle.x = Math.random() * canvas.width;
+                        particle.y = Math.random() * canvas.height;
+                    }
+                });
+                
+                requestAnimationFrame(animateParticles);
+            }
+            
+            animateParticles();
+            
+            window.addEventListener('resize', () => {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            });
+        }
+    </script>
 </body>
 </html>
