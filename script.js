@@ -1,7 +1,7 @@
 // Configuration for API endpoint and key
 const API_CONFIG = {
-    endpoint: 'https://api.hoaxbuster.ai/v1/verify', // Replace with actual API endpoint
-    apiKey: 'YOUR_API_KEY_HERE', // Replace with actual API key
+    endpoint: 'https://oxfcb18s01.execute-api.ap-southeast-1.amazonaws.com/', // Replace with actual API endpoint
+    apiKey: 'tiYbk6fnENavq3qwqIM9U5yDHnkNkNnm6zX63OZL', // Replace with actual API key
     timeout: 10000 // 10 seconds timeout
 };
 
