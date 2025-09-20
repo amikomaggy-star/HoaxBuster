@@ -1,3 +1,4 @@
+/*
 document.getElementById("submitBtn").addEventListener("click", () => {
   const input = document.getElementById("newsInput").value;
 
@@ -7,17 +8,17 @@ document.getElementById("submitBtn").addEventListener("click", () => {
       "Submission ID: mock-12345";
   }, 1000);
 });
+*/
 
-/*
 document.getElementById("submitBtn").addEventListener("click", async () => {
   const input = document.getElementById("newsInput").value;
   const resultDiv = document.getElementById("result");
 
   // Placeholder for your API key
-  const API_KEY = "YOUR_API_KEY_HERE"; // Replace when available
+  const API_KEY = "tiYbk6fnENavq3qwqIM9U5yDHnkNkNnm6zX63OZL"; // Replace when available
 
   // Placeholder for your API endpoint
-  const API_ENDPOINT = "https://your-api-gateway-url/analyze"; // Replace with actual endpoint
+  const API_ENDPOINT = "https://oxfcb18s01.execute-api.ap-southeast-1.amazonaws.com/detect"; // Replace with actual endpoint
 
   // Show loading message
   resultDiv.innerText = "Analyzing... 🔍";
@@ -52,4 +53,3 @@ document.getElementById("submitBtn").addEventListener("click", async () => {
     console.error("API Error:", error);
   }
 });
-*/
